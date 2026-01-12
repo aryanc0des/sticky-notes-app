@@ -59,7 +59,7 @@ async def get_note_by_id(db: db_dependency, id: int):
 
 
 @app.put('/notes/update_note/{id}', status_code=status.HTTP_204_NO_CONTENT)
-async def update_note(db: db_dependency, id: int, update_this_note: addNewNote):
+async def update_note_by_id(db: db_dependency, id: int, update_this_note: addNewNote):
     note_to_update = db.query(Notes).filter_by(id=id).first()
 
     if note_to_update is None:
@@ -71,3 +71,15 @@ async def update_note(db: db_dependency, id: int, update_this_note: addNewNote):
     db.add(note_to_update)
     db.commit()
     raise HTTPException(status_code=204, detail='updated the existing note sucessfully')
+
+@app.delete('/notes/delete_note/{id}', status_code=status.HTTP_204_NO_CONTENT)
+async def delete_note_by_id(db: db_dependency, id: int):
+    note_to_delete = db.query(Notes).filter_by(id=id).first()
+    
+    if note_to_delete is None:
+        raise HTTPException(status_code=404, detail='note not found')
+    
+    db.delete(note_to_delete)
+    db.commit()
+    
+    raise HTTPException(status_code=204, detail='note deleted sucessfully')
