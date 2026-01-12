@@ -42,3 +42,11 @@ async def create_new_note(db: db_dependency, new_note: addNewNote):
     db.commit()
     
     raise HTTPException(status_code=201, detail='new note created sucessfully')
+
+@app.get('/notes/detailed_note/{id}', status_code=status.HTTP_200_OK)
+async def get_note_by_id(db: db_dependency, id: int):
+    note_to_return = db.query(Notes).filter_by(id=id).first()
+    if note_to_return is not None:
+        return note_to_return
+    else:
+        raise HTTPException(status_code=404, detail='note not found')
