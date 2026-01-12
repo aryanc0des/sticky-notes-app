@@ -22,4 +22,14 @@ def get_db():
     finally:
         db.close()
         
-db_dependency = Annotated[LocalSession, Depends(get_db)]
+
+db_dependency = Annotated[Session, Depends(get_db)]
+
+@app.get('/', status_code=status.HTTP_200_OK)
+async def home():
+    return {"message":"ok, server working"}
+
+@app.get('/notes', status_code=status.HTTP_200_OK)
+async def get_all_notes(db: db_dependency):
+    notes_to_return = db.query(Notes).all() 
+    return notes_to_return
