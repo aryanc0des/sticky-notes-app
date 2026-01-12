@@ -33,3 +33,12 @@ async def home():
 async def get_all_notes(db: db_dependency):
     notes_to_return = db.query(Notes).all() 
     return notes_to_return
+
+@app.post('/notes/new_note', status_code=status.HTTP_201_CREATED)
+async def create_new_note(db: db_dependency, new_note: addNewNote):
+    note_to_add = Notes(**new_note.model_dump())
+    
+    db.add(note_to_add)
+    db.commit()
+    
+    raise HTTPException(status_code=201, detail='new note created sucessfully')
